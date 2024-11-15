@@ -5,7 +5,8 @@ this is a generic implementation of app bridge react v4 max modal with reset/sav
 
 changing the src and then opening the modal doesnt work for me. i would just make a little wrapper like this wherever you're going to have a list of things that can be opened in a modal (IndexTable etc)
 
-``const ExampleModal = ({ id, src }: { id: string, src: string }) => {
+```
+const ExampleModal = ({ id, src }: { id: string, src: string }) => {
     const { openModal, ...modalProps } = useAppBridgeV4Modal({
         id,
         src,
@@ -23,13 +24,16 @@ changing the src and then opening the modal doesnt work for me. i would just mak
             </Button>
         </>
     );
-}``
+}
+```
+
 
 for the modal contents themselves, you have to make a route OUTSIDE the context of your app.tsx route. so dont put "app." in the route file name. like it still goes in /routes but name the file itself `literally-anything.tsx`.  this route file needs to have ALL the boilerplate from your boilerplate app.tsx route file EXCEPT the nav menu stuff. so grab the CSS imports, AppProvider, loader(), everything and copy pasta that shit to this new route file. then put your modal component in that route file as the default export. this is assuming remix routing as of 11.14.24, i guess they're adding alternatives to file based routing with v3
 
 anyways, inside this route, assuming you're using the default shopify react form lib, you can just pass the form.dirty val into the useInnerAppBridgeV4Modal hook along with a callback for onSave and onReset. like so
 
-``const handleSave = async () => {
+```
+const handleSave = async () => {
         await submitAll();
     };
     const handleDiscard = () => {
@@ -40,7 +44,8 @@ anyways, inside this route, assuming you're using the default shopify react form
         onSave: () => void handleSave(),
         onReset: () => handleDiscard(),
         dirty: tileForm.dirty,
-    });``
+    });
+```
 
 I've had issues with css modules not loading for the first 2 seconds, not sure if its a skill issue or if its just something we have to deal with tbh.
 
