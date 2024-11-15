@@ -29,7 +29,7 @@ export const AppBridgeV4Modal = ({
                     <button disabled={dirty} onClick={() => resetModal()}>
                         Reset
                     </button>
-                    <button disabled={!dirty} onClick={() => saveModal} variant="primary">Save</button>
+                    <button disabled={!dirty} onClick={() => saveModal()} variant="primary">Save</button>
                 </TitleBar>
             </Modal>
         </>
@@ -49,7 +49,7 @@ export function useAppBridgeV4Modal({
     const shopify = useAppBridge();
     const openModal = useCallback(() => {
         void shopify.modal.show(id);
-    }, [id, shopify.modal]);
+    }, [id]);
 
     useEffect(() => {
         function handleMessageFromModal(ev: MessageEvent<{ dirty: boolean }>) {
