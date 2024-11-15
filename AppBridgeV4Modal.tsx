@@ -15,6 +15,7 @@ export const AppBridgeV4Modal = ({
     saveModal,
     resetModal,
 }: Omit<ReturnType<typeof useAppBridgeV4Modal>, "openModal">) => {
+    // tbh I don't really understand useRef but someone smart at shopify posted a demo of the modal with it and I figure she probably knows what shes doing so im keeping it
     const modalRef = useRef<UIModalElement>(null);
     return (
         <>
@@ -35,23 +36,20 @@ export const AppBridgeV4Modal = ({
     );
 };
 type AppBridgeV4ModalArgs = {
-    title: string;
+    src: string;
     id: string;
-    // this is specific to my implementation - you can get rid of this or replace with whats relevant to you.
-    resource: "tiles" | "rules" | "layouts";
+    title: string;
 };
 export function useAppBridgeV4Modal({
-    resource,
+    src,
     id,
     title,
 }: AppBridgeV4ModalArgs) {
     const [dirty, setDirty] = useState(false);
     const shopify = useAppBridge();
-    const modalId = useMemo(() => `modal-${resource}-${id}`, [id, resource]);
-    const modalSrc = useMemo(() => `/modal/${resource}/${id}`, [id, resource]);
     const openModal = useCallback(() => {
-        void shopify.modal.show(modalId);
-    }, [modalId, shopify.modal]);
+        void shopify.modal.show(id);
+    }, [id, shopify.modal]);
 
     useEffect(() => {
         function handleMessageFromModal(ev: MessageEvent<{ dirty: boolean }>) {
@@ -71,20 +69,20 @@ export function useAppBridgeV4Modal({
 
     const saveModal = useCallback(() => {
         document
-            .getElementById(modalId)
+            .getElementById(id)
             ?.contentWindow?.postMessage("save", location.origin);
-    }, [modalId]);
+    }, [id]);
 
     const resetModal = useCallback(() => {
         document
-            .getElementById(modalId)
+            .getElementById(id)
             ?.contentWindow?.postMessage("reset", location.origin);
-    }, [modalId]);
+    }, [id]);
 
     return {
-        id: modalId,
+        id,
         title: title,
-        src: modalSrc,
+        src,
         openModal,
         saveModal,
         resetModal,
